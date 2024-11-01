@@ -1,3 +1,4 @@
+![fe66a02d2c5690dc845fb1667bd5f368](https://github.com/user-attachments/assets/e71ce315-623e-40b9-ac31-bdf53f8d7a67)
 # Weather Dashboard
 
 This Weather Dashboard is a responsive web application built with Next.js and shadcn that provides real-time weather data and a 5-day weather forecast. Leveraging the OpenWeather API, users can select their desired country to retrieve the current weather conditions and detailed forecasts.

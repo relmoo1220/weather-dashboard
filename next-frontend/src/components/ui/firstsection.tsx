@@ -13,9 +13,13 @@ import { useState, useEffect } from "react";
 
 interface FirstSectionProps {
   weatherData: WeatherData | null;
+  country: string | null;
 }
 
-export default function FirstSection({ weatherData }: FirstSectionProps) {
+export default function FirstSection({
+  weatherData,
+  country,
+}: FirstSectionProps) {
   const [currentDateTime, setCurrentDateTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -24,9 +28,9 @@ export default function FirstSection({ weatherData }: FirstSectionProps) {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [weatherData, country]);
 
-  if (!weatherData || !currentDateTime) {
+  if (!weatherData || !currentDateTime || !country) {
     return;
   }
 
@@ -37,7 +41,7 @@ export default function FirstSection({ weatherData }: FirstSectionProps) {
           <Card className="flex flex-col h-full p-4 w-[400px] text-center space-y-6 justify-center items-center bg-purple-300 border-purple-900 border-4">
             <div className="flex text-base p-4 rounded-3xl bg-purple-900 font-bold text-secondary">
               <MapPin className="h-6 w-6 mr-1" />
-              Singapore
+              {country}
             </div>
             <div className="text-3xl font-extrabold">
               {currentDateTime.toLocaleTimeString()}

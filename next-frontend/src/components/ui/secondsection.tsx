@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -25,7 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { WeatherForecast, ForecastItem } from "./forecastinterface";
+import { WeatherForecast } from "./forecastinterface";
 
 const chartConfig = {
   temp: {
@@ -54,7 +46,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function SecondSection() {
+interface SecondSectionProps {
+  weatherForecast: WeatherForecast | null;
+  country: string | null;
+}
+
+export default function SecondSection({
+  weatherForecast,
+  country,
+}: SecondSectionProps) {
   const [chartData, setChartData] = useState<
     {
       date: string;
@@ -68,34 +68,28 @@ export function SecondSection() {
   >([]);
 
   useEffect(() => {
-    const fetchWeatherData = async () => {
-      const apiKey = process.env.NEXT_PUBLIC_API_KEY; // Replace with your OpenWeather API key
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=Singapore&appid=${apiKey}&units=metric`
-      );
-      const data: WeatherForecast = await response.json();
+    if (!weatherForecast || !country) {
+      return; // Exit early from the effect, not the component
+    }
 
-      const transformedData = data.list.map((item) => ({
-        date: item.dt_txt,
-        temp: item.main.temp,
-        feels_like: item.main.feels_like,
-        temp_min: item.main.temp_min,
-        temp_max: item.main.temp_max,
-        humidity: item.main.humidity,
-        wind_speed: item.wind.speed,
-      }));
+    const transformedData = weatherForecast.list.map((item) => ({
+      date: item.dt_txt,
+      temp: item.main.temp,
+      feels_like: item.main.feels_like,
+      temp_min: item.main.temp_min,
+      temp_max: item.main.temp_max,
+      humidity: item.main.humidity,
+      wind_speed: item.wind.speed,
+    }));
 
-      setChartData(transformedData);
-    };
-
-    fetchWeatherData();
-  }, []);
+    setChartData(transformedData);
+  }, [weatherForecast, country]);
 
   return (
     <div className="flex p-2 w-full h-[550px] justify-center space-x-4">
       <Card className="bg-purple-300 text-purple-900 font-bold min-w-[600px] h-full border-purple-900 border-4">
         <CardHeader>
-          <CardTitle>Temperature Forecast</CardTitle>
+          <CardTitle>Temperature Forecast of {country}</CardTitle>
           <CardDescription>
             5-day forecast of temperature and feels-like
           </CardDescription>
@@ -188,7 +182,7 @@ export function SecondSection() {
       </Card>
       <Card className="bg-purple-300 text-purple-900 font-bold min-w-[600px] h-full border-purple-900 border-4">
         <CardHeader>
-          <CardTitle>Min/Max Temperature Forecast</CardTitle>
+          <CardTitle>Min/Max Temperature Forecast of {country}</CardTitle>
           <CardDescription>
             5-day forecast of minimum and maximum temperature
           </CardDescription>
@@ -237,9 +231,9 @@ export function SecondSection() {
         </CardFooter>
       </Card>
       <div className="flex flex-col h-full space-y-2">
-        <Card className="bg-purple-300 text-purple-900 border-purple-900 border-4 overflow-y-auto font-bold h-1/2">
+        <Card className="text-sm bg-purple-300 text-purple-900 border-purple-900 border-4 overflow-hidden font-bold h-1/2">
           <CardHeader>
-            <CardTitle>Humidity Forecast</CardTitle>
+            <CardTitle>Humidity Forecast of {country}</CardTitle>
             <CardDescription>5-day forecast of humidity levels</CardDescription>
           </CardHeader>
           <CardContent>
@@ -284,9 +278,9 @@ export function SecondSection() {
             </ChartContainer>
           </CardContent>
         </Card>
-        <Card className="bg-purple-300 text-purple-900 border-purple-900 border-4 overflow-y-auto font-bold h-1/2">
+        <Card className="text-sm bg-purple-300 text-purple-900 border-purple-900 border-4 overflow-hidden font-bold h-1/2">
           <CardHeader>
-            <CardTitle>Wind Speed Forecast</CardTitle>
+            <CardTitle>Wind Speed Forecast of {country}</CardTitle>
             <CardDescription>5-day forecast of wind speeds</CardDescription>
           </CardHeader>
           <CardContent>
